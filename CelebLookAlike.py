@@ -15,8 +15,6 @@ from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 
 
 
-
-
 def get_cropped_face(file):
     img = cv.imread(file)
 
