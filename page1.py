@@ -18,7 +18,7 @@ def show_identifier_page():
 	celebs = make_celeb_list()
 
 	st.sidebar.selectbox('Celebrities', (celebs))
-	upload_file = st.file_uploader('Upload file here: ')
+	upload_file = st.file_uploader('Upload file here: ', type = ['.png', '.jpg', '.jpeg', '.webp'])
 
 
 	predict = st.button('Find celebrity lookalike')
