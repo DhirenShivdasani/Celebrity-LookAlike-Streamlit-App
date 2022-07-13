@@ -14,25 +14,17 @@ from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 
 
 
-
-def get_cropped_face(file):
-    img = cv.imread(file)
-
-    gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
-    haar = cv.CascadeClassifier('haar_face.xml')
-
-    faces = haar.detectMultiScale(gray, scaleFactor = 1.3, minNeighbors = 5)
-
-    for(x,y,w,h) in faces:
-        roi_gray = gray[y:y+h, x:x+w]
-        roi_color = img[y:y+h, x:x+w]
-        if len(faces) == 1:
-            return roi_color
-
-""" loads image """
+#loads example images (uses path)
 def load_img(path):
     img = cv2.cvtColor(cv2.imread(path, 1), cv2.COLOR_BGR2RGB)
     return img
+
+
+#loads user image (uses file)
+def load_user_img(file):
+    file_bytes = np.asarray(bytearray(file.read()), dtype=np.uint8) # Convert the file to an opencv image.
+    user_img = cv2.cvtColor(cv2.imdecode(file_bytes, 1), cv2.COLOR_BGR2RGB)
+    return user_img
 
 
 #load mtcnn and InceptionResnetV1
@@ -66,10 +58,17 @@ def show_embed(img_embedding):
     embed_img_int = (embed_img * 255).astype(np.uint8)
     return embed_img_int
 
-#returns the image embedding just from inputting the path of the image
+#returns the image embedding just from inputting the path of the image (for the examples)
 def path_to_embedding(path):
     img = load_img(path)
     mtcnn_test = img_to_mtcnn(img)
+    img_embed = mtcnn_to_embedding(mtcnn_test)
+    return img_embed
+
+#returns the image embedding the file (for user images)
+def file_to_embedding(file):
+    image = load_user_img(file)
+    mtcnn_test = img_to_mtcnn(image)
     img_embed = mtcnn_to_embedding(mtcnn_test)
     return img_embed
 
@@ -86,18 +85,20 @@ def make_celeb_list():
 def euclidean_distance(p1,p2):
     return np.linalg.norm(p1-p2)
 
-def calculate_distances(path, img_embedding_df): #takes a path for any image
-    img_embed = path_to_embedding(path) #gets the image embedding from the path
-    distances = [euclidean_distance(img_embed ,row.values)
+
+
+def calculate_distances(embed, img_embedding_df): #takes a path for any image
+    img_embedding = embed #gets the image embedding from the path
+    distances = [euclidean_distance(img_embedding ,row.values)
      for i, row in img_embedding_df.drop(['name'], axis = 1).iterrows()] #calculates the euclidean distance between the image embedding inputted and the rest of the celebrity image embeddings
     return distances #return a list of the distances
 
 
-#makes data frame of all the distances, sorted from lowest to highest
-def make_distances_df(uploaded_img_path, img_embedding_df):
+#makes dataframe of all the distances, sorted from lowest to highest
+def make_distances_df(embed, img_embedding_df):
     df = pd.DataFrame( data = 
                       {'celeb': img_embedding_df['name'],
-                       'distance': calculate_distances(uploaded_img_path, img_embedding_df)}) 
+                       'distance': calculate_distances(embed, img_embedding_df)}) 
     df.sort_values('distance',ascending = True, inplace = True) 
     return df
 
@@ -158,16 +159,13 @@ def get_top3_ys(tsne_df, top3):
     return top3_ys
 
 
-def make_plot(path, img_embed_df):
-    
-    #gets embedding for the uploaded image
-    uploaded_img_embed = path_to_embedding(path)
+def make_plot(embed, img_embed_df):
     
     #makes data frame for all the euclidean distance values from the celebrity image embedding to the uploaded image embedding
-    distances_df = make_distances_df(path, img_embed_df)
+    distances_df = make_distances_df(embed, img_embed_df)
 
     #adds the uploaded image embedding to the embedding data frame
-    final_embed_df = add_uploaded_embed(img_embed_df, uploaded_img_embed, 'dhiren') #adds uploaded img to data frame    
+    final_embed_df = add_uploaded_embed(img_embed_df, embed, 'You') #adds uploaded img to data frame    
     
     #tsne data frame for all the image embeddings
     tsne_df = make_tsne(final_embed_df)
@@ -208,7 +206,7 @@ def make_plot(path, img_embed_df):
                             connectionstyle="arc3"))
     
     
-    ax.get_legend().remove()
+    ax.get_legend().remove() #removes legend
 
     #drops the uploaded image from the data frame to return the data frame back to normal 
     final_embed_df.drop(856, axis = 0, inplace = True)
@@ -217,45 +215,11 @@ def make_plot(path, img_embed_df):
 
 
 
-
-#used to add celebrities to the sample
-def addCelebrity(first, last):
-    firstName = first
-    lastName = last
-    getImages(firstName, lastName)
-    count = 1
-    os.mkdir(f'CelebImages/Cropped/{firstName} {lastName}Cropped')
-    for entry in os.scandir(f'CelebImages/{firstName} {lastName}'):
-        roi_color = get_cropped_face(entry.path)
-        if roi_color is not None:
-            cv2.imwrite(f'CelebImages/Cropped/{firstName} {lastName}Cropped/{firstName} {lastName}Cropped{count}.jpg', roi_color)
-            count +=1
-
-
-
-#used for getting a list of 500 celebrities off the internet
-def find_celeb_names():
-    options = webdriver.ChromeOptions()
-    options.add_experimental_option("detach", True)
-    driver = webdriver.Chrome(options = options, executable_path = '/Users/dhirenshivdasani/Downloads/chromedriver')
-    driver.get('https://www.famousfix.com/list/500-actors-actresses')
-    driver.implicitly_wait(3)
-
-    fullCelebList = []
-    y = 100
-    for i in range(1,200):
-        driver.execute_script("window.scrollTo(0,"+ str(y) + ")")
-        driver.implicitly_wait(16)
-        fullCelebList.append(driver.find_element(By.XPATH, f'//*[@id="container"]/li[{i}]/a/span/span').text)
-        y += 100
-
-    return fullCelebList
-
-
-
 if __name__ == '__main__':
     resnet, mtcnn = load_models()
     all_embeds = pd.read_csv('img_embeddings134.csv', index_col = [0])
+
+
 
 
 
