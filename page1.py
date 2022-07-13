@@ -28,24 +28,30 @@ def show_identifier_page():
 		st.write(file_details)
 		file_bytes = np.asarray(bytearray(upload_file.read()), dtype=np.uint8) # Convert the file to an opencv image.
 
+
+
 		
 	all_embeds = pd.read_csv('img_embeddings134.csv', index_col = [0])
 	if predict:
 	
 
-		df = make_distances_df(f"Test/{file_details['FileName']}", all_embeds)
-
+		
 		with st.spinner('Identifying celebrity lookalike'):
 			time.sleep(1)
 		st.success('Done!')
 
-		st.subheader('Your celebrity lookalike is ' + df.iloc[0]['celeb'])
-
+		
 		uploaded_img = cv2.cvtColor(cv2.imdecode(file_bytes, 1), cv2.COLOR_BGR2RGB)
 		mtcnn_img = img_to_mtcnn(uploaded_img)
-		celeb_look_alike_img = get_celeb_look_alike_img(df, all_embeds)
 		embed = mtcnn_to_embedding(mtcnn_img)
 		embed_img = show_embed(embed)
+		df = make_distances_df(embed, all_embeds)
+		celeb_look_alike_img = get_celeb_look_alike_img(df, all_embeds)
+
+		st.subheader('Your celebrity lookalike is ' + df.iloc[0]['celeb'])
+
+
+
 
 		st.image([cv2.resize(uploaded_img, (150,200)), cv2.resize(load_mtcnn(mtcnn_img), (150,200)), cv2.resize(embed_img, (150,200), interpolation = cv2.INTER_AREA), cv2.resize(celeb_look_alike_img, (150,200))], clamp = True)
 
@@ -63,6 +69,8 @@ def show_identifier_page():
 
 		
 
-		tsne = make_plot(f"Test/{file_details['FileName']}", all_embeds)
+		tsne = make_plot(embed, all_embeds)
 		st.pyplot(tsne)
 
+
+				
