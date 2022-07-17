@@ -25,8 +25,7 @@ I also included a T-SNE plot, which is a method for visualizing high dimensional
 
 # Visualizations
 
-![barplot](https://user-images.githubusercontent.com/51030977/179425021-5e22be4f-a4b9-469b-b506-868ba74a0dc8.png)
-
+![barplot](https://user-images.githubusercontent.com/51030977/179425402-4bff23f9-c6aa-4e75-9556-5b7da189caf4.png)
 
 ![tsne](https://user-images.githubusercontent.com/51030977/179425114-47165de2-cf1f-4256-b103-53ad617806b1.png)
 
