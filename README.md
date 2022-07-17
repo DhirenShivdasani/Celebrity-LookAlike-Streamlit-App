@@ -8,6 +8,6 @@ https://dhirenshivdasani-celebrity-lookalike-streamlit-app-app-mrbmo1.streamlita
 # Images from website 
 
 Example of my program identifying the images celebrity lookalike to be Vin Diesel
-![example1](https://user-images.githubusercontent.com/51030977/179424837-b18a44de-8bea-43d6-96cf-65ddb46a81af.png)
+![example1 (2)](https://user-images.githubusercontent.com/51030977/179424880-42de3890-658f-4c85-86b1-c6b0e2bb65a9.png)
 
 
