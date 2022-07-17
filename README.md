@@ -25,10 +25,8 @@ I also included a T-SNE plot, which is a method for visualizing high dimensional
 
 # Visualizations
 
-DataFrame and Barplot visual for the example image above
 ![barplot](https://user-images.githubusercontent.com/51030977/179425021-5e22be4f-a4b9-469b-b506-868ba74a0dc8.png)
 
-T-SNE visual
 
 ![tsne](https://user-images.githubusercontent.com/51030977/179425114-47165de2-cf1f-4256-b103-53ad617806b1.png)
 
