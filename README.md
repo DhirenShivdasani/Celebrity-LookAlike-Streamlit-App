@@ -1,5 +1,5 @@
 # Celebrity-LookAlike-Streamlit-App
-Take a picture of yourself or upload in image of yourself to find out who your celebrity lookalike is!
+Take a picture of yourself or upload in image of yourself to find out who your celebrity lookalike is! (I included only 134 celebrities so far, but I will add more later on)
 
 https://dhirenshivdasani-celebrity-lookalike-streamlit-app-app-mrbmo1.streamlitapp.com/
 
