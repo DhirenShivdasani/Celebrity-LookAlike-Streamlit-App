@@ -19,4 +19,10 @@ To classify this image I needed to find a way to compare the face embeddings of 
 I also included a T-SNE plot, which is a method for visualizing high dimensional data, at the bottom because I wanted to be able to visualize the image embeddings for each celebrity as well as your own.
 
 # Visualizations
+
+DataFrame and Barplot visual for the example image above
 ![barplot](https://user-images.githubusercontent.com/51030977/179425021-5e22be4f-a4b9-469b-b506-868ba74a0dc8.png)
+
+T-SNE visual
+![tsne](https://user-images.githubusercontent.com/51030977/179425114-47165de2-cf1f-4256-b103-53ad617806b1.png)
+
